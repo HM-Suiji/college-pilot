@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+docs/
+
+# Dependencies and build output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# Local env
+.env*.local
+
+# Editor settings
+.project
+.classpath
+.settings/
