@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "../style.css";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: "2024-2026 高考录取数据查询",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="zh-CN">
       <body>{children}</body>
       <Analytics />
+      <SpeedInsights />
     </html>
   );
 }
