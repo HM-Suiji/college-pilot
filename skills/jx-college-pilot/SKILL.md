@@ -18,8 +18,7 @@ Only use HTTP requests to the API for data access.
 1. Convert the user's request into API query parameters.
 2. Fetch `GET https://college-pilot.huanment.top/api/admissions/{year}`.
 3. Summarize the structured results using school name, major name, subject requirement, scores, ranks, plans, remarks, and differences.
-4. If the query is broad and `pagination.hasMore` is true, fetch additional pages only when needed.
-5. If required filters are ambiguous, ask a short clarification or make a conservative default and state it.
+4. If required filters are ambiguous, ask a short clarification or make a conservative default and state it.
 
 ## Endpoints
 
@@ -63,7 +62,6 @@ The API accepts multiple parameter names. Prefer the names in the "Use" column.
 | `only2026` |  | `1` to keep only entries with 2026 plan data in `all` mode. |
 | `hideSports` |  | `1` to hide sports-related schools/majors. |
 | `hideCoop` |  | `1` to hide Chinese-foreign cooperation programs. |
-| `page` |  | Cumulative page size. Page 1 returns 30 items, page 2 returns the first 60 items. |
 
 Subject requirement codes:
 
@@ -95,7 +93,6 @@ When the user gives partial natural language, fill parameters as follows:
 Default behavior:
 
 - Use `year=all` unless the user explicitly asks for a single year.
-- Use `page=1` first.
 - Do not default `province=江西`; `province` means school location, not candidate origin.
 - If score/rank recommendations are requested without a subject requirement, ask for selected subjects when precision matters; otherwise run the broad query and mention that subject filtering was not applied.
 
@@ -107,17 +104,13 @@ Search responses contain:
 {
   "route": { "year": "all", "mode": "mergedComparison" },
   "filters": {},
-  "pagination": {
-    "page": 1,
-    "pageSize": 30,
-    "returnedCount": 30,
-    "totalCount": 168,
-    "hasMore": true
-  },
+  "totalCount": 168,
   "error": null,
   "items": []
 }
 ```
+
+The API returns all matching items in a single response. Do not use pagination parameters.
 
 Merged `all` items use:
 
@@ -177,25 +170,25 @@ Use standard HTTP tooling available in the environment, such as `fetch`, `Invoke
 Search Nanchang University in merged mode:
 
 ```text
-https://college-pilot.huanment.top/api/admissions/all?schoolName=南昌大学&page=1
+https://college-pilot.huanment.top/api/admissions/all?schoolName=南昌大学
 ```
 
 Search Jiangxi undergraduate programs for 590+ score and rank <= 15000, excluding cooperation programs:
 
 ```text
-https://college-pilot.huanment.top/api/admissions/all?province=江西&batch=本科&minimumScore=590&maximumRank=15000&hideCoop=1&page=1
+https://college-pilot.huanment.top/api/admissions/all?province=江西&batch=本科&minimumScore=590&maximumRank=15000&hideCoop=1
 ```
 
 Search 2025 physics+chemistry computer-related majors:
 
 ```text
-https://college-pilot.huanment.top/api/admissions/2025?subjectCode=04*05&majorName=计算机&page=1
+https://college-pilot.huanment.top/api/admissions/2025?subjectCode=04*05&majorName=计算机
 ```
 
 Search 2026 plan records:
 
 ```text
-https://college-pilot.huanment.top/api/admissions/2026?schoolName=南昌大学&page=1
+https://college-pilot.huanment.top/api/admissions/2026?schoolName=南昌大学
 ```
 
 ## Answering Guidance
@@ -204,5 +197,5 @@ https://college-pilot.huanment.top/api/admissions/2026?schoolName=南昌大学&p
 - For recommendations, separate "safer", "match", and "stretch" only when score/rank evidence supports that grouping.
 - Explain that 2026 records are plan data, not actual admission outcomes.
 - Preserve important remarks such as color blindness restrictions, language requirements, gender restrictions, military/police categories, or high fees.
-- If multiple pages are needed, report how many results exist and whether more pages were fetched.
+- Report `totalCount` when the result set is large, and summarize or rank the most relevant matches instead of dumping every item.
 - Do not invent or expose non-API implementation details.

@@ -1,6 +1,6 @@
-import { AdmissionYear, PAGE_SIZE, RouteYear } from "./constants";
+import { AdmissionYear, RouteYear } from "./constants";
 import { AdmissionRecord, computeDiffs, getAdmissionData, MergedRecord, YearMetric } from "./data";
-import { Filters, parseFilters, SearchParamsInput, visibleLimit } from "./filters";
+import { Filters, parseFilters, SearchParamsInput } from "./filters";
 import { SearchResult, searchAdmissions } from "./search";
 
 export type ApiSearchParams = URLSearchParams | SearchParamsInput;
@@ -8,8 +8,7 @@ export type ApiSearchParams = URLSearchParams | SearchParamsInput;
 export function buildAdmissionsApiResponse(year: RouteYear, searchParams: ApiSearchParams) {
   const filters = parseFilters(year, normalizeSearchParams(searchParams));
   const output = searchAdmissions(filters);
-  const limit = Math.min(visibleLimit(filters.page), output.total);
-  const items = output.items.slice(0, limit).map(serializeSearchResult);
+  const items = output.items.map(serializeSearchResult);
 
   return {
     route: {
@@ -17,13 +16,7 @@ export function buildAdmissionsApiResponse(year: RouteYear, searchParams: ApiSea
       mode: year === "all" ? "mergedComparison" : "singleYear",
     },
     filters: serializeFilters(filters),
-    pagination: {
-      page: filters.page,
-      pageSize: PAGE_SIZE,
-      returnedCount: items.length,
-      totalCount: output.total,
-      hasMore: limit < output.total,
-    },
+    totalCount: output.total,
     error: filters.error || null,
     items,
   };
