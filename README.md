@@ -11,6 +11,7 @@ miniprogram-web/
 ├── app/                  # Next.js App Router 页面
 ├── components/           # 服务器组件
 ├── lib/                  # 数据展开、筛选解析、检索逻辑
+├── skills/               # AI Skills，可安装到支持 Skills 的客户端
 ├── style.css             # 全局样式
 ├── alldata.js            # 合并后的高考录取数据（~4.7MB）
 ├── package.json
@@ -58,6 +59,22 @@ npm run dev
 http://localhost:3000/all
 ```
 
+## AI Skills
+
+项目提供了 `jx-college-pilot` skill，用于让支持 Skills 的 AI 客户端直接通过线上 API 查询江西省 2024-2026 年高考录取数据和 2026 年招生计划数据。适用场景包括院校/专业检索、分数和位次筛选、选科要求查询、跨年对比、2026 招生计划分析等。
+
+从 GitHub 仓库安装：
+
+```bash
+npx skills install https://github.com/HM-Suiji/college-pilot.git
+```
+
+安装后，在支持 Skills 的客户端中提问时可直接描述查询需求，例如：
+
+```text
+帮我查南昌大学 2024-2026 年计算机相关专业的录取分数、位次和 2026 计划数
+```
+
 ## 路由和参数
 
 - `/all`：跨年合并对比
@@ -72,6 +89,7 @@ http://localhost:3000/all
 
 ## 项目来源
 
+- 本仓库：[GitHub - HM-Suiji/college-pilot.git](https://github.com/HM-Suiji/college-pilot.git)
 - 原始项目：[GitHub - Shirakawa-Kotone/miniprogram-web](https://github.com/Shirakawa-Kotone/miniprogram-web)
 - 数据来源：[江西省教育考试院](http://jyks.jxedu.gov.cn/)
 
