@@ -3,6 +3,7 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { AdmissionYear, SR_RMAP, subjectLabel } from "./constants";
 
@@ -84,7 +85,7 @@ export type MergedRecord = {
   variants: Record<AdmissionYear, Pick<AdmissionRecord, "batch" | "plan" | "groupCode" | "fee">>;
 };
 
-type AdmissionData = {
+export type AdmissionData = {
   records: AdmissionRecord[];
   byYear: Record<AdmissionYear, AdmissionRecord[]>;
   merged: MergedRecord[];
@@ -230,6 +231,19 @@ export function getAdmissionData(): AdmissionData {
   };
 
   return cache;
+}
+
+export async function getCachedAdmissionData(): Promise<AdmissionData> {
+  "use cache";
+
+  cacheLife({
+    stale: 60 * 60 * 24 * 365,
+    revalidate: 60 * 60 * 24 * 365,
+    expire: 60 * 60 * 24 * 365 * 2,
+  });
+  cacheTag("admissions", "admissions:data");
+
+  return getAdmissionData();
 }
 
 export function computeDiffs(record: MergedRecord): GroupDiff[] {

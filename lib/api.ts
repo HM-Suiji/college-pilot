@@ -1,13 +1,24 @@
+import { cacheLife, cacheTag } from "next/cache";
+
 import { AdmissionYear, RouteYear } from "./constants";
-import { AdmissionRecord, computeDiffs, getAdmissionData, MergedRecord, YearMetric } from "./data";
+import { AdmissionRecord, computeDiffs, getCachedAdmissionData, MergedRecord, YearMetric } from "./data";
 import { Filters, parseFilters, SearchParamsInput } from "./filters";
-import { SearchResult, searchAdmissions } from "./search";
+import { SearchResult, searchAdmissionsCached } from "./search";
 
 export type ApiSearchParams = URLSearchParams | SearchParamsInput;
 
-export function buildAdmissionsApiResponse(year: RouteYear, searchParams: ApiSearchParams) {
-  const filters = parseFilters(year, normalizeSearchParams(searchParams));
-  const output = searchAdmissions(filters);
+export async function buildAdmissionsApiResponse(year: RouteYear, searchParams: SearchParamsInput) {
+  "use cache";
+
+  cacheLife({
+    stale: 60 * 60 * 24 * 365,
+    revalidate: 60 * 60 * 24 * 365,
+    expire: 60 * 60 * 24 * 365 * 2,
+  });
+  cacheTag("admissions", "admissions:api", `admissions:api:${year}`);
+
+  const filters = parseFilters(year, searchParams);
+  const output = await searchAdmissionsCached(filters);
   const items = output.items.map(serializeSearchResult);
 
   return {
@@ -22,8 +33,17 @@ export function buildAdmissionsApiResponse(year: RouteYear, searchParams: ApiSea
   };
 }
 
-export function buildOptionsApiResponse() {
-  const data = getAdmissionData();
+export async function buildOptionsApiResponse() {
+  "use cache";
+
+  cacheLife({
+    stale: 60 * 60 * 24 * 365,
+    revalidate: 60 * 60 * 24 * 365,
+    expire: 60 * 60 * 24 * 365 * 2,
+  });
+  cacheTag("admissions", "admissions:options");
+
+  const data = await getCachedAdmissionData();
 
   return {
     years: ["all", "2024", "2025", "2026"],

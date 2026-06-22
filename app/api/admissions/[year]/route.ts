@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { buildAdmissionsApiResponse } from "@/lib/api";
+import { buildAdmissionsApiResponse, normalizeSearchParams } from "@/lib/api";
 import { normalizeYear } from "@/lib/filters";
 
 type RouteContext = {
   params: Promise<{ year: string }>;
 };
+
+const API_CACHE_CONTROL = "public, max-age=31536000, stale-while-revalidate=31536000";
 
 export async function GET(request: Request, context: RouteContext) {
   const { year: yearParam } = await context.params;
@@ -20,6 +22,13 @@ export async function GET(request: Request, context: RouteContext) {
     );
   }
 
-  const response = buildAdmissionsApiResponse(year, new URL(request.url).searchParams);
-  return NextResponse.json(response);
+  const response = await buildAdmissionsApiResponse(
+    year,
+    normalizeSearchParams(new URL(request.url).searchParams),
+  );
+  return NextResponse.json(response, {
+    headers: {
+      "Cache-Control": API_CACHE_CONTROL,
+    },
+  });
 }

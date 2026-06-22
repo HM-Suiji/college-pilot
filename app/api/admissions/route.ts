@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { buildAdmissionsApiResponse } from "@/lib/api";
+import { buildAdmissionsApiResponse, normalizeSearchParams } from "@/lib/api";
 import { normalizeYear } from "@/lib/filters";
 
-export function GET(request: Request) {
+const API_CACHE_CONTROL = "public, max-age=31536000, stale-while-revalidate=31536000";
+
+export async function GET(request: Request) {
   const url = new URL(request.url);
   const year = normalizeYear(url.searchParams.get("year") ?? "all");
 
@@ -17,6 +19,10 @@ export function GET(request: Request) {
   }
 
   url.searchParams.delete("year");
-  const response = buildAdmissionsApiResponse(year, url.searchParams);
-  return NextResponse.json(response);
+  const response = await buildAdmissionsApiResponse(year, normalizeSearchParams(url.searchParams));
+  return NextResponse.json(response, {
+    headers: {
+      "Cache-Control": API_CACHE_CONTROL,
+    },
+  });
 }

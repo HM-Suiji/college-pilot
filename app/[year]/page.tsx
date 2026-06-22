@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { FilterForm } from "@/components/FilterForm";
 import { Pagination } from "@/components/Pagination";
@@ -13,9 +14,15 @@ type PageProps = {
   searchParams: Promise<SearchParamsInput>;
 };
 
-export const dynamic = "force-dynamic";
+export default function AdmissionsPage(props: PageProps) {
+  return (
+    <Suspense fallback={<main className="page" aria-label="正在加载查询结果" />}>
+      <AdmissionsRuntimePage {...props} />
+    </Suspense>
+  );
+}
 
-export default async function AdmissionsPage({ params, searchParams }: PageProps) {
+async function AdmissionsRuntimePage({ params, searchParams }: PageProps) {
   const [{ year: yearParam }, rawSearchParams] = await Promise.all([params, searchParams]);
   const year = normalizeYear(yearParam);
 

@@ -1,4 +1,6 @@
-import { AdmissionRecord, getAdmissionData, MergedRecord } from "./data";
+import { cacheLife, cacheTag } from "next/cache";
+
+import { AdmissionData, AdmissionRecord, getAdmissionData, getCachedAdmissionData, MergedRecord } from "./data";
 import { Filters } from "./filters";
 
 export type GroupedResult = MergedRecord & {
@@ -18,27 +20,43 @@ export type SearchOutput = {
 };
 
 export function searchAdmissions(filters: Filters): SearchOutput {
+  return searchAdmissionsWithData(filters, getAdmissionData());
+}
+
+export async function searchAdmissionsCached(filters: Filters): Promise<SearchOutput> {
+  "use cache";
+
+  cacheLife({
+    stale: 60 * 60 * 24 * 365,
+    revalidate: 60 * 60 * 24 * 365,
+    expire: 60 * 60 * 24 * 365 * 2,
+  });
+  cacheTag("admissions", "admissions:search", `admissions:year:${filters.year}`);
+
+  return searchAdmissionsWithData(filters, await getCachedAdmissionData());
+}
+
+function searchAdmissionsWithData(filters: Filters, data: AdmissionData): SearchOutput {
   if (filters.error) {
     return { grouped: filters.year === "all", total: 0, items: [] };
   }
 
   if (filters.year === "all") {
-    const items = searchMerged(filters).map((item) => ({
+    const items = searchMerged(filters, data).map((item) => ({
       ...item,
       isGrouped: true as const,
     }));
     return { grouped: true, total: items.length, items };
   }
 
-  const items = searchSingleYear(filters).map((item) => ({
+  const items = searchSingleYear(filters, data).map((item) => ({
     ...item,
     isGrouped: false as const,
   }));
   return { grouped: false, total: items.length, items };
 }
 
-function searchMerged(filters: Filters): MergedRecord[] {
-  const data = getAdmissionData();
+function searchMerged(filters: Filters, data: AdmissionData): MergedRecord[] {
   const provinces = filters.provinces.length ? new Set(filters.provinces) : null;
   const results: MergedRecord[] = [];
 
@@ -97,10 +115,9 @@ function passMetric(
   return true;
 }
 
-function searchSingleYear(filters: Filters): AdmissionRecord[] {
+function searchSingleYear(filters: Filters, data: AdmissionData): AdmissionRecord[] {
   if (filters.year === "all") return [];
 
-  const data = getAdmissionData();
   const records = data.byYear[filters.year];
   const provinces = filters.provinces.length ? new Set(filters.provinces) : null;
   const results: AdmissionRecord[] = [];
