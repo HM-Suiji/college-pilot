@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import "../style.css";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "2024-2026 高考录取数据查询",
@@ -17,9 +18,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
-      <Analytics />
-      <SpeedInsights />
+      <body>
+        {children}
+        <Suspense fallback={null}>
+          <Analytics />
+          <SpeedInsights />
+        </Suspense>
+      </body>
     </html>
   );
 }
