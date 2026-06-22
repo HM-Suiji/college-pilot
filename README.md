@@ -28,6 +28,7 @@ miniprogram-web/
 - **URL 分页**：`page` 参数控制显示页数，每页 30 条
 - **年份差异对比**：自动检测专业组、批次、性质、收费标准的跨年变化
 - **备注折叠**：使用原生 `details/summary`，不引入客户端状态
+- **API暴露**：通过 `/api` 路径提供数据展开、筛选解析、检索功能，便于未来 AI 检索或其他前端使用
 
 ## 数据说明
 
@@ -68,3 +69,10 @@ http://localhost:3000/all
 - `minScore` / `maxRank`：分数和排名筛选
 - `only2026` / `hideSports` / `hideCoop`：开关参数，值为 `1`
 - `page`：分页参数
+
+## 项目来源
+
+- 原始项目：[GitHub - Shirakawa-Kotone/miniprogram-web](https://github.com/Shirakawa-Kotone/miniprogram-web)
+- 数据来源：[江西省教育考试院](http://jyks.jxedu.gov.cn/)
+
+特别感谢 [@Shirakawa-Kotone](https://github.com/Shirakawa-Kotone) 的贡献！本项目补足了原项目直接使用SPA单页应用对于状态保持、重复检索、AI检索等方面的不足，提升了用户体验和数据查询效率。
