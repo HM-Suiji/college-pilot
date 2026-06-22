@@ -61,6 +61,8 @@ http://localhost:3000/all
 
 ## AI Skills
 
+### jx-college-pilot
+
 项目提供了 `jx-college-pilot` skill，用于让支持 Skills 的 AI 客户端直接通过线上 API 查询江西省 2024-2026 年高考录取数据和 2026 年招生计划数据。适用场景包括院校/专业检索、分数和位次筛选、选科要求查询、跨年对比、2026 招生计划分析等。
 
 从 GitHub 仓库安装：
@@ -72,7 +74,23 @@ npx skills install https://github.com/HM-Suiji/college-pilot.git
 安装后，在支持 Skills 的客户端中提问时可直接描述查询需求，例如：
 
 ```text
-帮我查南昌大学 2024-2026 年计算机相关专业的录取分数、位次和 2026 计划数
+使用jx-college-pilot skill帮我查南昌大学 2024-2026 年计算机相关专业的录取分数、位次和 2026 计划数
+```
+
+### jx-preference-pilot
+
+另一个 skill `jx-preference-pilot` 则基于 `jx-college-pilot` 的数据查询能力，帮助用户构建江西省的高考志愿填报方案，支持冲稳保策略、专业组选择、是否服从调剂等功能。适用于需要将分数/位次/选科要求转化为具体志愿方案的用户。
+
+从 GitHub 仓库安装：
+
+```bash
+npx skills install https://github.com/HM-Suiji/college-pilot.git
+```
+
+安装后，在支持 Skills 的客户端中提问时可直接描述查询需求，例如：
+
+```text
+使用jx-preference-pilot skill为我填报本科批专业，专业偏好xx类，估分约xxx
 ```
 
 ## 路由和参数
