@@ -1,0 +1,4 @@
+interface:
+  display_name: "JX Preference Pilot"
+  short_description: "Jiangxi本科45专业组冲稳保志愿填报规划助手"
+  default_prompt: "Use $jx-preference-pilot to collect my Jiangxi本科批志愿偏好, query $jx-college-pilot, and draft a 45-group 冲稳保 plan."
