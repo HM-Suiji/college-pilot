@@ -49,7 +49,7 @@ async function AdmissionsRuntimePage({ params, searchParams }: PageProps) {
             ) : null}
           </div>
           <div className="result-bar-actions">
-            <a className="help-btn" href="https://github.com/Shirakawa-Kotone/miniprogram-web/issues/new">
+            <a className="help-btn" href="https://github.com/HM-Suiji/college-pilot/issues/new">
               反馈
             </a>
           </div>

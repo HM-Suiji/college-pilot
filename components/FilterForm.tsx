@@ -20,7 +20,7 @@ export function FilterForm({ filters, batches }: FilterFormProps) {
           <span className="label">当前年份</span>
           <strong className="route-pill">{filters.year === "all" ? "全部对比" : `${filters.year} 年`}</strong>
         </div>
-        <a className="help-btn" href="https://github.com/Shirakawa-Kotone/miniprogram-web/issues/new">
+        <a className="help-btn" href="https://github.com/HM-Suiji/college-pilot/issues/new">
           反馈
         </a>
       </div>
