@@ -22,6 +22,7 @@ type RawRecord = [
   number,
   number,
   number,
+  number | null,
 ];
 
 type RawData = {
@@ -52,6 +53,7 @@ export type AdmissionRecord = {
   subjectCode: string;
   subjectText: string;
   majorName: string;
+  majorCode: string;
   score: number;
   rank: number;
   count: number;
@@ -137,6 +139,7 @@ function expandRawData(raw: RawData): AdmissionRecord[] {
       subjectCode,
       subjectText: subjectLabel(subjectCode),
       majorName: majorNamePool[record[5]] ?? "",
+      majorCode: record[14] === null ? "" : groupCodePool[record[14]] ?? "",
       score: Number(record[6] ?? 0),
       rank: Number(record[7] ?? 0),
       count: Number(record[8] ?? 0),

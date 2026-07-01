@@ -973,6 +973,11 @@ input[type="number"] {
   word-break: break-word;
 }
 
+.major-name .match-note {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
 .major-row > span,
 .major-row > strong {
   text-align: right;

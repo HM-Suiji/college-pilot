@@ -169,7 +169,16 @@ function MajorRow({ major }: { major: SchoolMajorDetail }) {
     <div className="major-row" role="listitem">
       <div className="major-name">
         <span>{major.majorName}</span>
+        {major.majorCode ? <small>专业代号 {major.majorCode}</small> : null}
         {major.plan ? <small>{major.plan}</small> : null}
+        {major.matchedYear ? (
+          <small className="match-note">
+            匹配{major.matchedYear}
+            {major.matchedMajorName && major.matchedMajorName !== major.majorName
+              ? `：${major.matchedMajorName}`
+              : ""}
+          </small>
+        ) : null}
       </div>
       <span>{major.count}人</span>
       <strong>{formatMetric(major.rank, "-")}</strong>
