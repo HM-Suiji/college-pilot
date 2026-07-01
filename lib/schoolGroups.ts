@@ -29,6 +29,13 @@ export type SchoolMajorDetail = {
   matchedMajorName: string;
 };
 
+export type SchoolGroupOption = {
+  value: string;
+  label: string;
+  groupCount: number;
+  majorCount: number;
+};
+
 export type SchoolGroupDetail = {
   id: string;
   year: AdmissionYear;
@@ -87,6 +94,22 @@ export function getSchoolGroupDetails(filters: SchoolGroupFilters): SchoolGroupD
     .sort((a, b) => sortGroups(a, b, filters.sort));
 }
 
+export function getSchoolGroupOptions(filters: SchoolGroupFilters): SchoolGroupOption[] {
+  const data = getAdmissionData();
+  const optionGroups = new Map<string, AdmissionRecord[]>();
+
+  for (const record of data.records) {
+    if (!matchesFilters(record, { ...filters, groupCode: "" })) continue;
+    if (!record.groupCode) continue;
+    optionGroups.set(record.groupCode, [...(optionGroups.get(record.groupCode) ?? []), record]);
+  }
+
+  return Array.from(optionGroups.entries()).map(toGroupOption).sort((a, b) =>
+    a.value.localeCompare(b.value, "zh-Hans-CN", { numeric: true })
+      || a.label.localeCompare(b.label, "zh-Hans-CN", { numeric: true }),
+  );
+}
+
 export function makeSchoolSearchHref(
   filters: SchoolGroupFilters,
   updates: Partial<Record<keyof SchoolGroupFilters, string | null>>,
@@ -123,6 +146,30 @@ function matchesFilters(record: AdmissionRecord, filters: SchoolGroupFilters): b
   if (filters.groupCode && !record.groupCode.includes(filters.groupCode)) return false;
   if (filters.batch && record.batch !== filters.batch) return false;
   return true;
+}
+
+function toGroupOption([groupCode, records]: [string, AdmissionRecord[]]): SchoolGroupOption {
+  const years = Array.from(new Set(records.map((record) => record.year))).sort((a, b) => yearWeight(a) - yearWeight(b));
+  const subjects = Array.from(new Set(records.map((record) => record.subjectText).filter(Boolean))).sort((a, b) =>
+    a.localeCompare(b, "zh-Hans-CN"),
+  );
+  const batches = Array.from(new Set(records.map((record) => record.batch).filter(Boolean))).sort((a, b) =>
+    a.localeCompare(b, "zh-Hans-CN"),
+  );
+  const distinctGroups = new Set(
+    records.map((record) => [record.year, record.schoolCode, record.subjectCode, record.batch, record.groupCode].join("\u0000")),
+  );
+  const distinctMajors = new Set(records.map((record) => [record.year, record.majorName].join("\u0000")));
+  const details = [years.join("/"), subjects.join("、"), batches.join("、")]
+    .filter(Boolean)
+    .join(" · ");
+
+  return {
+    value: groupCode,
+    label: `${groupCode}${details ? `（${details}）` : ""} - ${distinctMajors.size}个专业`,
+    groupCount: distinctGroups.size,
+    majorCount: distinctMajors.size,
+  };
 }
 
 function matchesHistoricalScope(record: AdmissionRecord, filters: SchoolGroupFilters): boolean {

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import {
   getSchoolGroupDetails,
+  getSchoolGroupOptions,
   makeSchoolSearchHref,
   parseSchoolGroupFilters,
   SchoolGroupDetail,
@@ -37,7 +38,9 @@ export default function SchoolPage(props: SchoolPageProps) {
 async function SchoolRuntimePage({ searchParams }: SchoolPageProps) {
   const rawSearchParams = await searchParams;
   const filters = parseSchoolGroupFilters(rawSearchParams);
-  const groups = filters.code || filters.name ? getSchoolGroupDetails(filters) : [];
+  const hasSchoolQuery = Boolean(filters.code || filters.name);
+  const groupOptions = hasSchoolQuery ? getSchoolGroupOptions(filters) : [];
+  const groups = hasSchoolQuery ? getSchoolGroupDetails(filters) : [];
   const totalMajors = groups.reduce((sum, group) => sum + group.majors.length, 0);
 
   return (
@@ -74,7 +77,21 @@ async function SchoolRuntimePage({ searchParams }: SchoolPageProps) {
           </label>
           <label className="filter-item">
             <span className="label">专业组</span>
-            <input className="input" name="groupCode" placeholder="全部" defaultValue={filters.groupCode} />
+            <select
+              className="input native-select"
+              name="groupCode"
+              defaultValue={filters.groupCode}
+              disabled={!hasSchoolQuery}
+            >
+              <option value="">
+                {hasSchoolQuery ? `全部专业组（${groupOptions.length}）` : "先输入院校"}
+              </option>
+              {groupOptions.map((option) => (
+                <option key={option.value || option.label} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="filter-item">
             <span className="label">排序</span>
