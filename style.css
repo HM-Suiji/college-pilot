@@ -782,6 +782,208 @@ input[type="number"] {
 }
 
 /* ============================================================
+   School Group Detail View
+   ============================================================ */
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
+}
+
+.detail-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.school-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.school-panel {
+  background: var(--card-bg);
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.school-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.school-title {
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.school-search-form {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.school-search-form .wide {
+  grid-column: 1 / -1;
+}
+
+.school-submit {
+  grid-column: 1 / -1;
+  height: 31px;
+  width: 100%;
+}
+
+.school-clear-link {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.school-results {
+  padding: 12px;
+}
+
+.school-result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.school-group-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.school-group-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.school-group-title,
+.school-group-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.school-group-title {
+  margin-bottom: 8px;
+}
+
+.school-group-title strong {
+  font-size: 15px;
+}
+
+.school-group-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border-light);
+}
+
+.school-metric {
+  background: var(--card-bg);
+  padding: 10px 8px;
+  min-width: 0;
+}
+
+.school-metric span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.school-metric strong {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.school-metric.primary strong {
+  color: var(--red);
+  font-size: 18px;
+}
+
+.major-list {
+  padding: 8px 10px 10px;
+}
+
+.major-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px 78px 54px;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 12px;
+}
+
+.major-row:last-child {
+  border-bottom: 0;
+}
+
+.major-head {
+  padding-top: 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.major-name {
+  min-width: 0;
+}
+
+.major-name span {
+  display: block;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.major-name small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.major-row > span,
+.major-row > strong {
+  text-align: right;
+  min-width: 0;
+}
+
+.major-row > strong {
+  color: var(--red);
+}
+
+/* ============================================================
    Float Button (scroll to top)
    ============================================================ */
 .float-btn {
@@ -1251,6 +1453,17 @@ input[type="number"] {
   color: #555;
 }
 
+:root.dark-mode .school-panel,
+:root.dark-mode .school-group-card,
+:root.dark-mode .school-metric {
+  background: var(--card-bg);
+}
+
+:root.dark-mode .detail-link {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 :root.dark-mode .step-bar-bg {
   background: #333;
 }
@@ -1345,6 +1558,29 @@ input[type="number"] {
     padding: 12px 16px;
   }
 
+  .school-panel,
+  .school-results {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .school-search-form {
+    grid-template-columns: 110px 150px minmax(220px, 1fr) 130px 130px 74px;
+  }
+
+  .school-search-form .wide {
+    grid-column: auto;
+  }
+
+  .school-submit {
+    grid-column: auto;
+  }
+
+  .major-row {
+    grid-template-columns: minmax(0, 1fr) 76px 110px 80px;
+    font-size: 13px;
+  }
+
   .float-btn {
     right: 30px;
     bottom: 40px;
@@ -1432,6 +1668,23 @@ input[type="number"] {
 
   .result-list .card {
     margin-bottom: 16px;
+  }
+
+  .school-panel,
+  .school-results {
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .school-panel {
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .school-results {
+    padding-top: 16px;
   }
 
   .float-btn {

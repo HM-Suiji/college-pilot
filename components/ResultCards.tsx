@@ -1,5 +1,14 @@
+import Link from "next/link";
+
 import { computeDiffs, GroupDiff, MergedRecord, YearMetric } from "@/lib/data";
 import { SearchResult } from "@/lib/search";
+
+type SchoolDetailSource = Pick<
+  SearchResult,
+  "batch" | "groupCode" | "province" | "schoolCode" | "schoolName" | "subjectCode"
+> & {
+  year?: string;
+};
 
 export function ResultCards({ items }: { items: SearchResult[] }) {
   return (
@@ -39,6 +48,7 @@ function GroupedCard({ item }: { item: MergedRecord }) {
         {item.fee ? <Row label="收费标准" value={`${item.fee}元/年`} /> : null}
         {item.remark ? <Remark text={item.remark} /> : null}
         <Diffs diffs={diffs} />
+        <CardActions item={item} />
       </div>
     </article>
   );
@@ -70,6 +80,7 @@ function SingleCard({ item }: { item: Extract<SearchResult, { isGrouped: false }
         )}
         {item.fee ? <Row label="收费标准" value={`${item.fee}元/年`} /> : null}
         {item.remark ? <Remark text={item.remark} /> : null}
+        <CardActions item={item} />
       </div>
     </article>
   );
@@ -139,4 +150,32 @@ function Diffs({ diffs }: { diffs: GroupDiff[] }) {
       ))}
     </section>
   );
+}
+
+function CardActions({ item }: { item: SchoolDetailSource }) {
+  return (
+    <div className="card-actions">
+      <Link className="detail-link" href={schoolDetailHref(item)}>
+        专业组明细
+      </Link>
+    </div>
+  );
+}
+
+function schoolDetailHref(item: SchoolDetailSource): string {
+  const params = new URLSearchParams();
+  const year = item.year ?? "all";
+  params.set("year", year);
+  setIf(params, "code", item.schoolCode);
+  setIf(params, "name", item.schoolName);
+  setIf(params, "province", item.province);
+  setIf(params, "subject", item.subjectCode);
+  if (year !== "all") setIf(params, "groupCode", item.groupCode);
+  setIf(params, "batch", item.batch);
+
+  return `/school?${params.toString()}`;
+}
+
+function setIf(params: URLSearchParams, key: string, value: string): void {
+  if (value) params.set(key, value);
 }
